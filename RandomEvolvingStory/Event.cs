@@ -12,6 +12,7 @@ namespace RandomEvolvingStory
         public string Occurrence { get; set; }
         public bool IsLocked { get; set; }
         public bool IsOngoing { get; set; }
+
         public string ChangeCharacterName()
         {
             string newName = "tempName";

@@ -29,8 +29,6 @@ namespace RandomEvolvingStory
         int positiony = 48;
         //the adjective we use to describe our character. used to determine whether we use "a" or "an" in grammar
         string quality1;
-        //add stuff here later
-        List<string> vowels = new List<string>() { "a" };
 
         private void button1_Click(object sender, EventArgs e)
         {
