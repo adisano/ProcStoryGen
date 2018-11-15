@@ -26,33 +26,20 @@ namespace RandomEvolvingStory
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AddCharacter(character1);
+            
+            DrawNewCharacter(character1);
 
-
-
-
-            /*
-            Label label1 = new Label();
-            label1.Text = "Test";
-            label1.AutoSize = true;
-            label1.Location = new Point(24, 48);
-            this.Controls.Add(label1);
-
-            Label label2 = new Label();
-            label2.Text = "Test2";
-            label2.AutoSize = true;
-            label2.Location = new Point(label1.Location.X + label1.Width, label1.Location.Y);
-            this.Controls.Add(label2);
-            */
         }
 
-        private void AddCharacter(Character character)
+        private void DrawNewCharacter(Character character)
         {
             Label charLabel = new Label();
+            charLabel.AutoSize = true;
             character.Name = character1.NameCharacter();
             charLabel.Text = character.Name;
-            charLabel.AutoSize = true;
+            charLabel.BorderStyle = BorderStyle.FixedSingle;
             charLabel.Location = new Point(positionx + charLabel.Width, positiony + charLabel.Height);
+            positionx += charLabel.Width;
             this.Controls.Add(charLabel);
         }
 
