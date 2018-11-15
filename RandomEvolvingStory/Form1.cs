@@ -22,45 +22,70 @@ namespace RandomEvolvingStory
         Event event1 = new Event();
         Random rnd = new Random();
         Grammar grammar1 = new Grammar();
+        List<Label> labels = new List<Label>();
+        int labelsInt = 0;
 
         //increment/decrement this to affect x position of labels
         int positionx = 48;
         //increment/decrement this to affect y position of labels
         int positiony = 48;
-        //the adjective we use to describe our character. used to determine whether we use "a" or "an" in grammar
+        //the adjective we use to describe our character.
+        //used to determine whether we use "a" or "an" in grammar
         string quality1;
+        bool storyDrawn = false;
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DrawNewCharacter(character1);
-            DrawNewVerb(grammar1);
-            //get a quality for the character so we can determine whether or not
-            //it starts with a vowel (so we know whether we need to use "a" or "an")
-            quality1 = character1.GetCharacterQuality(rnd);
-            DrawNewArticle(grammar1);
-            DrawNewCharQuality(quality1);
-            DrawNewCharProfession(character1);
-            DrawNewPunctuation();
+            positionx = 48;
+            positiony = 48;
+
+            if (!storyDrawn)
+            {
+                DrawStory();
+            }
+            else if (storyDrawn)
+            {
+                ChangeStory(character1);
+            }
+            storyDrawn = true;
         }
 
         //create a character and write their name to the screen
         private void DrawNewCharacter(Character character)
         {
             Label charLabel = new Label();
-            character.Name = character1.NameCharacter();
+            //add on-click event for this label
+            charLabel.Click += CharLabel_Click;
+            character.Name = character.GetCharacterName();
             charLabel.Text = character.Name;
             PositionText(charLabel);
+            labels.Add(charLabel);
             grammar1.WroteCharacter = true;
         }
 
-        //draw a verb and article (for example, "... was a...")
+        //on label click
+        private void CharLabel_Click(object sender, EventArgs e)
+        {
+            if (!character1.IsNameLocked)
+            {
+                character1.IsNameLocked = true;
+            }
+            else if (character1.IsNameLocked)
+            {
+                character1.IsNameLocked = false;
+            }
+        }
+
+        //draw a verb (for example, "was")
         private void DrawNewVerb(Grammar grammar)
         {
             Label verbLabel = new Label();
             verbLabel.Text = grammar1.GetVerb(character1, event1);
+            labels.Add(verbLabel);
             PositionText(verbLabel);
         }
 
+        //draw an article (for example, "a" or "the")
         private void DrawNewArticle(Grammar grammar)
         {
             Label artLabel = new Label();
@@ -83,13 +108,16 @@ namespace RandomEvolvingStory
 
             }
             PositionText(artLabel);
+            labels.Add(artLabel);
         }
 
-        private void DrawNewCharQuality(string quality)
+        private void DrawNewCharQuality(Character character)
         {
             Label qualLabel = new Label();
-            qualLabel.Text = quality;
+            character.Quality = character.GetCharacterQuality(rnd);
+            qualLabel.Text = character.Quality;
             PositionText(qualLabel);
+            labels.Add(qualLabel);
         }
 
         private void DrawNewCharProfession(Character character)
@@ -97,6 +125,7 @@ namespace RandomEvolvingStory
             Label profLabel = new Label();
             profLabel.Text = character.GetCharacterProfession(rnd);
             PositionText(profLabel);
+            labels.Add(profLabel);
         }
 
         private void DrawNewPunctuation()
@@ -104,7 +133,9 @@ namespace RandomEvolvingStory
             Label punctLabel = new Label();
             punctLabel.Text = grammar1.GetPunctuation(rnd);
             PositionText(punctLabel);
+            //this closes some of the white space between labels to make punctuation look better
             punctLabel.Location = new Point (punctLabel.Location.X - 2, punctLabel.Location.Y);
+            labels.Add(punctLabel);
         }
 
         private void PositionText(Label label)
@@ -126,5 +157,68 @@ namespace RandomEvolvingStory
             //update the x position of the next label
             positionx += label.Width - 2;
         }
+
+        //draws story to screen
+        private void DrawStory()
+        {
+            DrawNewCharacter(character1);
+            DrawNewVerb(grammar1);
+            //get a quality for the character so we can determine whether or not
+            //it starts with a vowel (so we know whether we need to use "a" or "an")
+            quality1 = character1.GetCharacterQuality(rnd);
+            DrawNewArticle(grammar1);
+            DrawNewCharQuality(character1);
+            DrawNewCharProfession(character1);
+            DrawNewPunctuation();
+        }
+
+        //re-randomizes unlocked story elements when Generate button is clicked
+        private void ChangeStory(Character character)
+        {
+            if (character.IsNameLocked)
+            {
+                //change this to character1.GetCharacterName();
+                character.Name = "NewName";
+                labels[labelsInt].Text = character.Name;
+                //FIX THIS
+                while (labelsInt < labels.Count)
+                {
+                    foreach (var item in labels)
+                    {
+                        PositionText(labels[labelsInt]);
+                        labelsInt++;
+                    }
+                }
+                labelsInt++;
+
+            }
+            else
+            {
+
+            }
+            if (character.IsQualityLocked)
+            {
+                character.Quality = character.GetCharacterQuality(rnd);
+                PositionText(labels[labelsInt]);
+                labelsInt++;
+            }
+            else
+            {
+
+            }
+            if (character.IsProfessionLocked)
+            {
+                character.Profession = character.GetCharacterProfession(rnd);
+                PositionText(labels[labelsInt]);
+                labelsInt++;
+            }
+            else
+            {
+
+            }
+        }
+
+        
+
     }
 }

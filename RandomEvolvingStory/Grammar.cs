@@ -8,13 +8,14 @@ namespace RandomEvolvingStory
 {
     class Grammar
     {
+        //triggers that will help the program decide which word to Get next.
         public bool WroteCharacter { get; set; }
         public bool WroteEvent { get; set; }
         public bool WroteA { get; set; }
         public bool WroteThe { get; set; }
         public bool WrotePunctuation { get; set; }
 
-        //decide on a verb to use after a noun is written to the screen
+        //Get a verb to Write later
         public string GetVerb(Character character, Event _event)
         {
             string labelText = "ERROR: last noun written not found";
@@ -51,7 +52,7 @@ namespace RandomEvolvingStory
             return labelText;
         }
 
-        //decide on an article to use after a noun and verb are written to the screen
+        //Get an article to Write later
         public string GetArticle(Random random)
         {
             string labelText = "ERROR: last noun written not found";
@@ -86,6 +87,7 @@ namespace RandomEvolvingStory
             return labelText;
         }
 
+        //Get a punctuation to Write later
         public string GetPunctuation(Random random)
         {
             string labelText = "Error: last noun written not found";
