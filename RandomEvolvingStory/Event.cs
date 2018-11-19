@@ -12,6 +12,8 @@ namespace RandomEvolvingStory
         public string Time { get; set; }
         //what happened, ie., "a storm raged", "the revolution began"
         public string Occurrence { get; set; }
+        public bool IsLocked { get; set; }
+        public bool IsOngoing { get; set; }
 
         public string ChangeCharacterName()
         {
