@@ -175,12 +175,12 @@ namespace RandomEvolvingStory
         //re-randomizes unlocked story elements when Generate button is clicked
         private void ChangeStory(Character character)
         {
-            if (character.IsNameLocked)
+            if (!character.IsNameLocked)
             {
                 //change this to character1.GetCharacterName();
                 character.Name = "NewName";
-                labels[labelsInt].Text = character.Name;
-                //FIX THIS
+                labels[this.labelsInt].Text = character.Name;
+                //iterate through labels to reposition them
                 while (labelsInt < labels.Count)
                 {
                     foreach (var item in labels)
@@ -188,29 +188,53 @@ namespace RandomEvolvingStory
                         PositionText(labels[labelsInt]);
                         labelsInt++;
                     }
+                    if (labelsInt == labels.Count)
+                    {
+                        labelsInt = 0;
+                        break;
+                    }
+                    else
+                    {
+
+                    }
                 }
-                labelsInt++;
 
             }
             else
             {
 
             }
-            if (character.IsQualityLocked)
+            
+            if (!character.IsQualityLocked)
             {
+
                 character.Quality = character.GetCharacterQuality(rnd);
-                PositionText(labels[labelsInt]);
-                labelsInt++;
+                labels[this.labelsInt].Text = character.Quality;
+                while (labelsInt < labels.Count)
+                {
+                    foreach (var item in labels)
+                    {
+                        PositionText(labels[labelsInt]);
+                        labelsInt++;
+                    }
+                    if (labelsInt == labels.Count)
+                    {
+                        labelsInt = 0;
+                        break;
+                    }
+                    else
+                    {
+
+                    }
+                }
             }
             else
             {
 
             }
-            if (character.IsProfessionLocked)
+            if (!character.IsProfessionLocked)
             {
                 character.Profession = character.GetCharacterProfession(rnd);
-                PositionText(labels[labelsInt]);
-                labelsInt++;
             }
             else
             {
