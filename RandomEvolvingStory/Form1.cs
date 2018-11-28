@@ -58,7 +58,7 @@ namespace RandomEvolvingStory
             Label charLabel = new Label();
             //add on-click event for this label
             charLabel.Click += CharLabel_Click;
-            character.Name = character.GetCharacterName();
+            character.Name = character.GetCharacterName(rnd);
             charLabel.Text = character.Name;
             PositionText(charLabel);
             labels.Add(charLabel);
@@ -71,7 +71,6 @@ namespace RandomEvolvingStory
             Control ctrl = ((Control)sender);
             if (!character1.IsNameLocked)
             {
-
                 ctrl.BackColor = Color.DarkGray;
                 character1.IsNameLocked = true;
             }
@@ -104,6 +103,7 @@ namespace RandomEvolvingStory
         private void DrawNewCharQuality(Character character)
         {
             Label qualLabel = new Label();
+            qualLabel.Click += QualLabel_Click;
             //quality1 should be used the first time a story is drawn,
             //then every time a story is re-drawn, character.GetCharacterQuality() should be used.
             character.Quality = quality1;
@@ -112,12 +112,43 @@ namespace RandomEvolvingStory
             labels.Add(qualLabel);
         }
 
+        private void QualLabel_Click(object sender, EventArgs e)
+        {
+            Control ctrl = ((Control)sender);
+            if (!character1.IsQualityLocked)
+            {
+                ctrl.BackColor = Color.DarkGray;
+                character1.IsQualityLocked = true;
+            }
+            else if (character1.IsQualityLocked)
+            {
+                ctrl.BackColor = Color.LightGray;
+                character1.IsQualityLocked = false;
+            }
+        }
+
         private void DrawNewCharProfession(Character character)
         {
             Label profLabel = new Label();
+            profLabel.Click += ProfLabel_Click;
             profLabel.Text = character.GetCharacterProfession(rnd);
             PositionText(profLabel);
             labels.Add(profLabel);
+        }
+
+        private void ProfLabel_Click(object sender, EventArgs e)
+        {
+            Control ctrl = ((Control)sender);
+            if (!character1.IsProfessionLocked)
+            {
+                ctrl.BackColor = Color.DarkGray;
+                character1.IsProfessionLocked = true;
+            }
+            else if (character1.IsProfessionLocked)
+            {
+                ctrl.BackColor = Color.LightGray;
+                character1.IsProfessionLocked = false;
+            }
         }
 
         private void DrawNewPunctuation()
@@ -171,7 +202,7 @@ namespace RandomEvolvingStory
             if (!character.IsNameLocked)
             {
                 //change this to character1.GetCharacterName();
-                character.Name = "NewName";
+                character.Name = character.GetCharacterName(rnd);
                 labels[labelsInt].Text = character.Name;
                 grammar1.WroteCharacter = true;
                 grammar1.WrotePunctuation = false;
@@ -180,7 +211,9 @@ namespace RandomEvolvingStory
             }
             else
             {
-
+                grammar1.WroteCharacter = true;
+                grammar1.WrotePunctuation = false;
+                labelsInt++;
             }
 
             string verb = grammar1.GetVerb(character1, event1);
@@ -201,7 +234,7 @@ namespace RandomEvolvingStory
             }
             else
             {
-
+                labelsInt += 2;
             }
 
             if (!character.IsProfessionLocked)
@@ -212,7 +245,7 @@ namespace RandomEvolvingStory
             }
             else
             {
-
+                labelsInt++;
             }
 
             string punctuation = grammar1.GetPunctuation(rnd);

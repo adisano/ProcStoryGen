@@ -15,16 +15,17 @@ namespace RandomEvolvingStory
         public bool IsQualityLocked = false;
         public bool IsProfessionLocked = false;
         public bool IsAlive { get; set; }
+        public List<string> Names = new List<string> { "Adriana", "Bob", "Alex", "Gregory", "Safina", "Riley",
+            "Isaac", "Joshua", "Ursula" };
         public List<string> Qualities = new List<string> { "strange", "beautiful", "mysterious",
         "intelligent", "strong", "independent", "bloodthirsty", "odd", "weird", "precious",
         "evil", "cute", "adventurous", "witty" };
         public List<string> Professions = new List<string> { "baker", "knight", "writer", "sailor",
         "songwriter" };
         
-        public string GetCharacterName()
+        public string GetCharacterName(Random random)
         {
-            //change this so it outputs a random name
-            string characterName = "Name";
+            string characterName = Names[random.Next(Names.Count)];
             return characterName;
         }
         
