@@ -53,9 +53,10 @@ namespace RandomEvolvingStory
         }
 
         //Get an article to Write later
-        public string GetArticle(Random random)
+        public string GetArticle(Random random, string quality)
         {
             string labelText = "ERROR: last noun written not found";
+            char[] qualityarray = quality.ToCharArray();
             if (WroteCharacter)
             {
                 int rnd = random.Next(1, 11);
@@ -68,6 +69,23 @@ namespace RandomEvolvingStory
                 {
                     labelText = "the";
                     WroteThe = true;
+                }
+                if (WroteA)
+                {
+
+                    if (qualityarray[0] == 'a' || qualityarray[0] == 'e' || qualityarray[0] == 'i'
+                        || qualityarray[0] == 'o' || qualityarray[0] == 'u')
+                    {
+                        labelText = "an";
+                    }
+                    else
+                    {
+                        labelText = "a";
+                    }
+                }
+                else
+                {
+                    labelText = "the";
                 }
             }
             else if (WroteEvent)
@@ -106,11 +124,19 @@ namespace RandomEvolvingStory
                 else
                 {
                     labelText = "";
+                    WroteA = false;
+                    WroteCharacter = false;
+                    WroteEvent = false;
+                    WroteThe = false;
                 }
             }
             else
             {
                 labelText = "";
+                WroteA = false;
+                WroteCharacter = false;
+                WroteEvent = false;
+                WroteThe = false;
             }
             return labelText;
         }

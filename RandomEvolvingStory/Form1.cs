@@ -36,18 +36,20 @@ namespace RandomEvolvingStory
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //these are used for iteration
             positionx = 48;
             positiony = 48;
+            labelsInt = 0;
 
             if (!storyDrawn)
             {
                 DrawStory();
+                storyDrawn = true;
             }
             else if (storyDrawn)
             {
-                ChangeStory(character1);
+                ReDrawStory(character1);
             }
-            storyDrawn = true;
         }
 
         //create a character and write their name to the screen
@@ -66,12 +68,17 @@ namespace RandomEvolvingStory
         //on label click
         private void CharLabel_Click(object sender, EventArgs e)
         {
+            Control ctrl = ((Control)sender);
             if (!character1.IsNameLocked)
             {
+
+                ctrl.BackColor = Color.DarkGray;
                 character1.IsNameLocked = true;
             }
             else if (character1.IsNameLocked)
             {
+
+                ctrl.BackColor = Color.LightGray;
                 character1.IsNameLocked = false;
             }
         }
@@ -89,24 +96,7 @@ namespace RandomEvolvingStory
         private void DrawNewArticle(Grammar grammar)
         {
             Label artLabel = new Label();
-            artLabel.Text = grammar1.GetArticle(rnd);
-            if (artLabel.Text == "a")
-            {
-                char[] quality1array = quality1.ToCharArray();
-                if (quality1array[0] == 'a' || quality1array[0] == 'e' || quality1array[0] == 'i'
-                    || quality1array[0] == 'o' || quality1array[0] == 'u')
-                {
-                    artLabel.Text = "an";
-                }
-                else
-                {
-
-                }
-            }
-            else
-            {
-
-            }
+            artLabel.Text = grammar1.GetArticle(rnd, quality1);
             PositionText(artLabel);
             labels.Add(artLabel);
         }
@@ -114,7 +104,9 @@ namespace RandomEvolvingStory
         private void DrawNewCharQuality(Character character)
         {
             Label qualLabel = new Label();
-            character.Quality = character.GetCharacterQuality(rnd);
+            //quality1 should be used the first time a story is drawn,
+            //then every time a story is re-drawn, character.GetCharacterQuality() should be used.
+            character.Quality = quality1;
             qualLabel.Text = character.Quality;
             PositionText(qualLabel);
             labels.Add(qualLabel);
@@ -173,73 +165,77 @@ namespace RandomEvolvingStory
         }
 
         //re-randomizes unlocked story elements when Generate button is clicked
-        private void ChangeStory(Character character)
+        private void ReDrawStory(Character character)
         {
+
             if (!character.IsNameLocked)
             {
                 //change this to character1.GetCharacterName();
                 character.Name = "NewName";
-                labels[this.labelsInt].Text = character.Name;
+                labels[labelsInt].Text = character.Name;
+                grammar1.WroteCharacter = true;
+                grammar1.WrotePunctuation = false;
                 //iterate through labels to reposition them
-                while (labelsInt < labels.Count)
-                {
-                    foreach (var item in labels)
-                    {
-                        PositionText(labels[labelsInt]);
-                        labelsInt++;
-                    }
-                    if (labelsInt == labels.Count)
-                    {
-                        labelsInt = 0;
-                        break;
-                    }
-                    else
-                    {
-
-                    }
-                }
-
+                labelsInt++;
             }
             else
             {
 
             }
-            
+
+            string verb = grammar1.GetVerb(character1, event1);
+            labels[labelsInt].Text = verb;
+            labelsInt++;
+
+            //character quality and article are linked
             if (!character.IsQualityLocked)
             {
-
                 character.Quality = character.GetCharacterQuality(rnd);
-                labels[this.labelsInt].Text = character.Quality;
-                while (labelsInt < labels.Count)
-                {
-                    foreach (var item in labels)
-                    {
-                        PositionText(labels[labelsInt]);
-                        labelsInt++;
-                    }
-                    if (labelsInt == labels.Count)
-                    {
-                        labelsInt = 0;
-                        break;
-                    }
-                    else
-                    {
 
-                    }
-                }
+                string article = grammar1.GetArticle(rnd, character.Quality);
+                labels[labelsInt].Text = article;
+                labelsInt++;
+
+                labels[labelsInt].Text = character.Quality;
+                labelsInt++;
             }
             else
             {
 
             }
+
             if (!character.IsProfessionLocked)
             {
                 character.Profession = character.GetCharacterProfession(rnd);
+                labels[labelsInt].Text = character.Profession;
+                labelsInt++;
             }
             else
             {
 
             }
+
+            string punctuation = grammar1.GetPunctuation(rnd);
+            labels[labelsInt].Text = punctuation;
+            labelsInt++;
+            grammar1.WrotePunctuation = true;
+
+            //reposition labels
+            int temp = 0;
+
+            while (temp < labels.Count)
+            {
+                foreach (var item in labels)
+                {
+                    PositionText(labels[temp]);
+                    temp++;
+                    if (temp >= labels.Count)
+                    {
+                        break;
+                    }
+                }
+            }
+
         }
 
         
