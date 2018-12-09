@@ -16,38 +16,20 @@ namespace RandomEvolvingStory
         public bool WrotePunctuation { get; set; }
 
         //Get a verb to Write later
-        public string GetVerb(Character character, Event _event)
+        public string GetVerb(Character character)
         {
             string labelText = "ERROR: last noun written not found";
-            if (WroteCharacter)
+            if (character.IsAlive)
             {
-                if (character.IsAlive)
-                {
-                    labelText = "is";
-                }
-                else if (!character.IsAlive)
-                {
-                    labelText = "was";
-                }
-                else
-                {
-                    labelText = "ERROR: character status not found";
-                }
+                labelText = "is";
             }
-            if (WroteEvent)
+            else if (!character.IsAlive)
             {
-                if (_event.IsOngoing)
-                {
-                    labelText = "is";
-                }
-                else if (!_event.IsOngoing)
-                {
-                    labelText = "was";
-                }
-                else
-                {
-                    labelText = "ERROR: event status not found";
-                }
+                labelText = "was";
+            }
+            else
+            {
+                labelText = "ERROR: character status not found";
             }
             return labelText;
         }

@@ -17,148 +17,66 @@ namespace RandomEvolvingStory
             InitializeComponent();
         }
 
-        //create character and event objects 
-        Character character1 = new Character();
-        Event event1 = new Event();
+        //to do: figure out how to delete old labels so new labels can be added
+        //and iterated through
+
+        //create character and event objects
         Random rnd = new Random();
-        Grammar grammar1 = new Grammar();
+        Storyteller storyteller = new Storyteller();
         List<Label> labels = new List<Label>();
-        int labelsInt = 0;
 
         //increment/decrement this to affect x position of labels
         int positionx = 48;
         //increment/decrement this to affect y position of labels
         int positiony = 48;
-        //the adjective we use to describe our character.
-        //used to determine whether we use "a" or "an" in grammar
-        string quality1;
-        bool storyDrawn = false;
+        //use this to lock/unlock labels from being randomized.
+        //false by default.
+        List<bool> isLocked = new List<bool> { };
 
         private void button1_Click(object sender, EventArgs e)
         {
             //these are used for iteration
             positionx = 48;
             positiony = 48;
-            labelsInt = 0;
 
-            if (!storyDrawn)
-            {
-                DrawStory();
-                storyDrawn = true;
-            }
-            else if (storyDrawn)
-            {
-                ReDrawStory(character1);
-            }
+            //get story elements before drawing them so we can manipulate them
+            //to make them grammatically correct.
+            GetStory();
+            DrawStory();
         }
 
-        //create a character and write their name to the screen
-        private void DrawNewCharacter(Character character)
+        //use storyteller.StoryElements for labelText
+        private void DrawNewLabel(string labelText)
         {
-            Label charLabel = new Label();
-            //add on-click event for this label
-            charLabel.Click += CharLabel_Click;
-            character.Name = character.GetCharacterName(rnd);
-            charLabel.Text = character.Name;
-            PositionText(charLabel);
-            labels.Add(charLabel);
-            grammar1.WroteCharacter = true;
+            Label label = new Label();
+
+            //add Label_Click method
+            label.Click += Label_Click;
+
+            label.Text = labelText;
+            labels.Add(label);
+
+            //add a false bool to the isLocked bool list.
+            //this will allow iteration through each bool to see if corresponding
+            //labels are locked or unlocked.
+            isLocked.Add(false);
+            PositionText(label);
         }
 
-        //on label click
-        private void CharLabel_Click(object sender, EventArgs e)
+        private void Label_Click(object sender, EventArgs e)
         {
             Control ctrl = ((Control)sender);
-            if (!character1.IsNameLocked)
+            int index = labels.FindIndex(x => x == ctrl);
+            if (!isLocked[index])
             {
                 ctrl.BackColor = Color.DarkGray;
-                character1.IsNameLocked = true;
+                isLocked[index] = true;
             }
-            else if (character1.IsNameLocked)
-            {
-
-                ctrl.BackColor = Color.LightGray;
-                character1.IsNameLocked = false;
-            }
-        }
-
-        //draw a verb (for example, "was")
-        private void DrawNewVerb(Grammar grammar)
-        {
-            Label verbLabel = new Label();
-            verbLabel.Text = grammar1.GetVerb(character1, event1);
-            labels.Add(verbLabel);
-            PositionText(verbLabel);
-        }
-
-        //draw an article (for example, "a" or "the")
-        private void DrawNewArticle(Grammar grammar)
-        {
-            Label artLabel = new Label();
-            artLabel.Text = grammar1.GetArticle(rnd, quality1);
-            PositionText(artLabel);
-            labels.Add(artLabel);
-        }
-
-        private void DrawNewCharQuality(Character character)
-        {
-            Label qualLabel = new Label();
-            qualLabel.Click += QualLabel_Click;
-            //quality1 should be used the first time a story is drawn,
-            //then every time a story is re-drawn, character.GetCharacterQuality() should be used.
-            character.Quality = quality1;
-            qualLabel.Text = character.Quality;
-            PositionText(qualLabel);
-            labels.Add(qualLabel);
-        }
-
-        private void QualLabel_Click(object sender, EventArgs e)
-        {
-            Control ctrl = ((Control)sender);
-            if (!character1.IsQualityLocked)
-            {
-                ctrl.BackColor = Color.DarkGray;
-                character1.IsQualityLocked = true;
-            }
-            else if (character1.IsQualityLocked)
+            else if (isLocked[index])
             {
                 ctrl.BackColor = Color.LightGray;
-                character1.IsQualityLocked = false;
+                isLocked[index] = false;
             }
-        }
-
-        private void DrawNewCharProfession(Character character)
-        {
-            Label profLabel = new Label();
-            profLabel.Click += ProfLabel_Click;
-            profLabel.Text = character.GetCharacterProfession(rnd);
-            PositionText(profLabel);
-            labels.Add(profLabel);
-        }
-
-        private void ProfLabel_Click(object sender, EventArgs e)
-        {
-            Control ctrl = ((Control)sender);
-            if (!character1.IsProfessionLocked)
-            {
-                ctrl.BackColor = Color.DarkGray;
-                character1.IsProfessionLocked = true;
-            }
-            else if (character1.IsProfessionLocked)
-            {
-                ctrl.BackColor = Color.LightGray;
-                character1.IsProfessionLocked = false;
-            }
-        }
-
-        private void DrawNewPunctuation()
-        {
-            Label punctLabel = new Label();
-            punctLabel.Text = grammar1.GetPunctuation(rnd);
-            PositionText(punctLabel);
-            //this closes some of the white space between labels to make punctuation look better
-            punctLabel.Location = new Point (punctLabel.Location.X - 2, punctLabel.Location.Y);
-            labels.Add(punctLabel);
         }
 
         private void PositionText(Label label)
@@ -181,97 +99,28 @@ namespace RandomEvolvingStory
             positionx += label.Width - 2;
         }
 
+        private List<string> GetStory()
+        {
+            //clear lists so we can create and iterate through new ones
+            isLocked.Clear();
+            storyteller.StoryElements.Clear();
+
+            storyteller.GetStoryElements(rnd);
+            return storyteller.StoryElements;
+        }
+
         //draws story to screen
         private void DrawStory()
         {
-            DrawNewCharacter(character1);
-            DrawNewVerb(grammar1);
-            //get a quality for the character so we can determine whether or not
-            //it starts with a vowel (so we know whether we need to use "a" or "an")
-            quality1 = character1.GetCharacterQuality(rnd);
-            DrawNewArticle(grammar1);
-            DrawNewCharQuality(character1);
-            DrawNewCharProfession(character1);
-            DrawNewPunctuation();
-        }
-
-        //re-randomizes unlocked story elements when Generate button is clicked
-        private void ReDrawStory(Character character)
-        {
-
-            if (!character.IsNameLocked)
-            {
-                //change this to character1.GetCharacterName();
-                character.Name = character.GetCharacterName(rnd);
-                labels[labelsInt].Text = character.Name;
-                grammar1.WroteCharacter = true;
-                grammar1.WrotePunctuation = false;
-                //iterate through labels to reposition them
-                labelsInt++;
-            }
-            else
-            {
-                grammar1.WroteCharacter = true;
-                grammar1.WrotePunctuation = false;
-                labelsInt++;
-            }
-
-            string verb = grammar1.GetVerb(character1, event1);
-            labels[labelsInt].Text = verb;
-            labelsInt++;
-
-            //character quality and article are linked
-            if (!character.IsQualityLocked)
-            {
-                character.Quality = character.GetCharacterQuality(rnd);
-
-                string article = grammar1.GetArticle(rnd, character.Quality);
-                labels[labelsInt].Text = article;
-                labelsInt++;
-
-                labels[labelsInt].Text = character.Quality;
-                labelsInt++;
-            }
-            else
-            {
-                labelsInt += 2;
-            }
-
-            if (!character.IsProfessionLocked)
-            {
-                character.Profession = character.GetCharacterProfession(rnd);
-                labels[labelsInt].Text = character.Profession;
-                labelsInt++;
-            }
-            else
-            {
-                labelsInt++;
-            }
-
-            string punctuation = grammar1.GetPunctuation(rnd);
-            labels[labelsInt].Text = punctuation;
-            labelsInt++;
-            grammar1.WrotePunctuation = true;
-
-            //reposition labels
             int temp = 0;
 
-            while (temp < labels.Count)
+            //draw labels for the current story
+            foreach (var item in storyteller.StoryElements)
             {
-                foreach (var item in labels)
-                {
-                    PositionText(labels[temp]);
-                    temp++;
-                    if (temp >= labels.Count)
-                    {
-                        break;
-                    }
-                }
+                DrawNewLabel(storyteller.StoryElements[temp]);
+                temp++;
             }
-
         }
-
         
-
     }
 }
