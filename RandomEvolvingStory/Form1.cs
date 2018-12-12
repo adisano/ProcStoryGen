@@ -20,7 +20,6 @@ namespace RandomEvolvingStory
         //to do: figure out how to delete old labels so new labels can be added
         //and iterated through
 
-        //create character and event objects
         Random rnd = new Random();
         Storyteller storyteller = new Storyteller();
         List<Label> labels = new List<Label>();
@@ -84,6 +83,7 @@ namespace RandomEvolvingStory
             this.Controls.Add(label);
             label.AutoSize = true;
             label.Location = new Point(positionx, positiony);
+
             //if label reaches the end of the form, move to the next line when writing
             if (label.Width + label.Location.X > 800)
             {
@@ -101,7 +101,7 @@ namespace RandomEvolvingStory
 
         private List<string> GetStory()
         {
-            //clear lists so we can create and iterate through new ones
+            //clear elements so we can create and iterate through new ones
             isLocked.Clear();
             storyteller.StoryElements.Clear();
 
@@ -112,9 +112,17 @@ namespace RandomEvolvingStory
         //draws story to screen
         private void DrawStory()
         {
+            //clear previous labels and lists
             int temp = 0;
+            foreach (var item in labels)
+            {
+                Controls.Remove(labels[temp]);
+                temp++;
+            }
+            labels.Clear();
 
             //draw labels for the current story
+            temp = 0;
             foreach (var item in storyteller.StoryElements)
             {
                 DrawNewLabel(storyteller.StoryElements[temp]);
